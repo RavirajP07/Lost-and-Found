@@ -1,72 +1,113 @@
-const db = require('../config/db');
+const Claim = require('../models/Claim');
+const Item = require('../models/Item');
+const Notification = require('../models/Notification');
+const ActivityLog = require('../models/ActivityLog');
 
-const submitClaim = async (req, res) => {
-  const { item_id, description } = req.body;
-  const user_id = req.user.id;
-
-  if (!item_id || !description) {
-    return res.status(400).json({ message: 'Item ID and description of proof are required.' });
-  }
-
-  try {
-    // Call stored procedure sp_submit_claim
-    await db.query('CALL sp_submit_claim(?, ?, ?)', [item_id, user_id, description]);
-    res.status(201).json({ message: 'Claim submitted successfully.' });
-  } catch (error) {
-    console.error('Error submitting claim via SP:', error);
-    res.status(400).json({ message: error.message || 'Failed to submit claim.' });
-  }
+function formatClaimResponse(claim) {
+  const obj = claim.toJSON ? claim.toJSON() : claim;
+  return {
+    ...obj,
+    item_name: obj.item_id?.item_name,
+    claimant_username: obj.claimant_user_id?.username,
+    claimant_email: obj.claimant_user_id?.email,
+    item_id: obj.item_id?._id?.toString() || obj.item_id?.toString(),
+    claimant_user_id: obj.claimant_user_id?._id?.toString() || obj.claimant_user_id?.toString()
+  };
 };
 
-const getClaims = async (req, res) => {
-  const { status } = req.query;
-  const isStudent = req.user.role === 'student';
-
-  let sql = 'SELECT * FROM vw_claim_details WHERE 1=1';
-  const params = [];
-
-  if (isStudent) {
-    sql += ' AND claimant_user_id = ?';
-    params.push(req.user.id);
-  }
-
-  if (status) {
-    sql += ' AND claim_status = ?';
-    params.push(status);
-  }
-
-  sql += ' ORDER BY claimed_at DESC';
-
+async function getClaims(req, res) {
   try {
-    const [rows] = await db.query(sql, params);
-    res.json(rows);
+    const isStudent = req.user.role === 'student';
+    let query = {};
+    if (isStudent) query.claimant_user_id = req.user.id;
+
+    const claims = await Claim.find(query)
+      .populate('item_id')
+      .populate('claimant_user_id')
+      .sort({ created_at: -1 });
+
+    res.json(claims.map(formatClaimResponse));
   } catch (error) {
-    console.error('Error fetching claims:', error);
     res.status(500).json({ message: 'Error fetching claims.', error: error.message });
   }
 };
 
-const processClaim = async (req, res) => {
-  const { id } = req.params; // claim_id
-  const { status, remarks } = req.body; // 'approved' or 'rejected', and admin_remarks
-  const admin_id = req.user.id;
-
-  if (!status || !['approved', 'rejected'].includes(status)) {
-    return res.status(400).json({ message: 'Invalid claim status (must be approved or rejected).' });
-  }
-
+async function submitClaim(req, res) {
   try {
-    // Call stored procedure sp_process_claim
-    await db.query('CALL sp_process_claim(?, ?, ?, ?)', [id, admin_id, status, remarks || '']);
-    res.json({ message: `Claim successfully ${status}.` });
+    const { item_id, description } = req.body;
+    if (!item_id || !description) return res.status(400).json({ message: 'Item ID and description are required.' });
+
+    const existingClaim = await Claim.findOne({ item_id, claimant_user_id: req.user.id, claim_status: 'pending' });
+    if (existingClaim) return res.status(400).json({ message: 'You already have a pending claim for this item.' });
+
+    const item = await Item.findById(item_id);
+    if (!item || item.type !== 'found' || item.item_status !== 'active') {
+      return res.status(400).json({ message: 'Item is not eligible for claiming.' });
+    }
+
+    const newClaim = await Claim.create({
+      item_id,
+      claimant_user_id: req.user.id,
+      claim_proof: description,
+      claim_status: 'pending'
+    });
+
+    await ActivityLog.create({
+      user_type: 'student',
+      user_id: req.user.id,
+      action: 'CLAIM_SUBMITTED',
+      details: `Submitted claim for item ID: ${item_id}`
+    });
+
+    res.status(201).json({ message: 'Claim submitted successfully.', claimId: newClaim._id });
   } catch (error) {
-    console.error('Error processing claim via SP:', error);
-    res.status(400).json({ message: error.message || 'Failed to process claim.' });
+    res.status(500).json({ message: 'Error submitting claim.', error: error.message });
   }
 };
 
-module.exports = {
-  submitClaim,
-  getClaims,
-  processClaim
+async function processClaim(req, res) {
+  try {
+    const { id } = req.params;
+    const { action, status, remarks } = req.body; 
+    const claimAction = action || status;
+
+    if (claimAction !== 'approved' && claimAction !== 'rejected') {
+      return res.status(400).json({ message: 'Invalid action.' });
+    }
+
+    const claim = await Claim.findById(id).populate('item_id');
+    if (!claim) return res.status(404).json({ message: 'Claim not found.' });
+
+    claim.claim_status = claimAction;
+    claim.admin_remarks = remarks || null;
+    claim.updated_at = Date.now();
+    await claim.save();
+
+    if (claimAction === 'approved') {
+      await Item.findByIdAndUpdate(claim.item_id._id, { item_status: 'claimed' });
+      await Claim.updateMany(
+        { item_id: claim.item_id._id, _id: { $ne: claim._id } },
+        { claim_status: 'rejected', admin_remarks: 'Item was claimed by another user.' }
+      );
+    }
+
+    await Notification.create({
+      user_id: claim.claimant_user_id,
+      title: `Claim ${claimAction === 'approved' ? 'Approved' : 'Rejected'}`,
+      message: `Your claim for "${claim.item_id.item_name}" has been ${claimAction}. ${remarks ? `Remarks: ${remarks}` : ''}`
+    });
+
+    await ActivityLog.create({
+      user_type: 'admin',
+      user_id: req.user.id,
+      action: `CLAIM_${claimAction.toUpperCase()}`,
+      details: `Processed claim ID: ${id} as ${claimAction}`
+    });
+
+    res.json({ message: `Claim has been ${claimAction} successfully.` });
+  } catch (error) {
+    res.status(500).json({ message: 'Error processing claim.', error: error.message });
+  }
 };
+
+module.exports = { getClaims, submitClaim, processClaim };

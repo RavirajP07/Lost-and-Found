@@ -1,8 +1,8 @@
-# CampusConnect -- College Lost & Found Portal
+# Lost and Found -- College Portal
 
-CampusConnect is a premium, responsive full-stack Lost & Found Management System built for college campuses. It enables students to report lost/found items, upload photos, filter postings, submit ownership claim forms, and receive live notifications. Admins can review claims via transactional stored procedures, manage categories, moderate spam postings, and view detailed analytical summaries.
+Lost and Found is a responsive full-stack Lost & Found Management System built for college campuses. It enables students to report lost/found items, upload photos, filter postings, submit ownership claim forms, and receive live notifications. Admins can review claims, manage categories, moderate spam postings, and oversee the platform.
 
-The system is built on **React (Vite) + Express + MySQL** and demonstrates advanced **Database Management System (DBMS)** features including normalization (3NF), indexes, views, triggers, and transactions.
+The system is built on the **MERN Stack** (MongoDB, Express, React, Node.js) and demonstrates modern web development practices including RESTful API design, JWT authentication, and responsive UI.
 
 ---
 
@@ -10,7 +10,7 @@ The system is built on **React (Vite) + Express + MySQL** and demonstrates advan
 
 - **Frontend**: React (Vite), React Router DOM, Axios, Plain Vanilla CSS3 (No Tailwind, No Bootstrap)
 - **Backend**: Node.js, Express.js, JWT, bcryptjs, Multer
-- **Database**: MySQL (relational schema, transactional procedures, triggers, views, indexes)
+- **Database**: MongoDB (Mongoose ODMs, relationships via ObjectIds)
 
 ---
 
@@ -18,19 +18,16 @@ The system is built on **React (Vite) + Express + MySQL** and demonstrates advan
 
 ```text
 CampusConnect/
- ├── database/
- │    ├── schema.sql         # DB Tables, PK/FK constraints, indexes, views
- │    ├── triggers.sql       # Audit triggers, notifications dispatch
- │    ├── procedures.sql     # Stored Procedures for claims processing
- │    └── sample_data.sql    # Seed data for immediate evaluation
  ├── server/
- │    ├── config/db.js       # MySQL Connection pool pool
+ │    ├── config/db.js       # MongoDB Connection setup
+ │    ├── models/            # Mongoose schemas (User, Item, Claim, Category, Notification, ActivityLog)
  │    ├── controllers/       # Controller business logic
- │    ├── middleware/        # JWT Authentication checks
- │    ├── routes/            # Express routes
+ │    ├── middleware/        # JWT Authentication checks & role validation
+ │    ├── routes/            # Express REST routes
  │    ├── uploads/           # Uploaded item images storage
  │    ├── server.js          # Main listener launcher
- │    └── app.js             # Express app configs
+ │    ├── app.js             # Express app configs
+ │    └── reset_db.js        # Script to wipe database and re-seed defaults
  ├── client/
  │    ├── src/
  │    │    ├── components/   # UI elements (Header, forms, modals)
@@ -41,53 +38,37 @@ CampusConnect/
  │    │    └── main.jsx      # React entry mount point
  │    ├── vite.config.js     # Dev server proxy configuration
  │    └── index.html         # Base template
- ├── verify.js               # SQL Verification suite
- └── DBMS_DOCUMENTATION.md   # Normalization, ERD, and API spec sheet
+ └── README.md
 ```
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Database Setup
-Ensure you have a running MySQL server. Log in to your MySQL terminal and run the SQL scripts in order:
-
-```bash
-# 1. Create database schema and views
-mysql -u root -p < database/schema.sql
-
-# 2. Add triggers
-mysql -u root -p < database/triggers.sql
-
-# 3. Add transactional stored procedures
-mysql -u root -p < database/procedures.sql
-
-# 4. Insert seed data
-mysql -u root -p < database/sample_data.sql
-```
-
-### 2. Configure Backend
-1. Open `server/.env` and update the database credentials to match your MySQL connection info:
-   ```env
-   PORT=5000
-   DB_HOST=localhost
-   DB_USER=your_mysql_username
-   DB_PASSWORD=your_mysql_password
-   DB_NAME=campus_connect
-   JWT_SECRET=super_secret_jwt_key_campus_connect_2026
-   ```
+### 1. Configure Backend & Database
+1. Ensure you have MongoDB installed and running locally, or have a MongoDB Atlas connection string.
 2. Open terminal in the `server/` directory and install dependencies:
    ```bash
    cd server
    npm install
    ```
-3. Start the Express server:
+3. Open `server/.env` (or create one) and configure your environment variables:
+   ```env
+   PORT=5000
+   MONGO_URI=mongodb://127.0.0.1:27017/lost_and_found
+   JWT_SECRET=super_secret_jwt_key_lost_and_found_2026
+   ```
+4. **Seed the Database**: Run the reset script to initialize default categories and the Admin account:
+   ```bash
+   node reset_db.js
+   ```
+5. Start the Express server:
    ```bash
    npm run dev
    ```
    The server will run on `http://localhost:5000`.
 
-### 3. Configure Frontend
+### 2. Configure Frontend
 1. Open a new terminal in the `client/` directory and install dependencies:
    ```bash
    cd client
@@ -97,26 +78,15 @@ mysql -u root -p < database/sample_data.sql
    ```bash
    npm run dev
    ```
-   The client application will run on `http://localhost:3000`.
-
----
-
-## 🧪 DBMS Layer Verification
-You can run the quick verification script to assert that all tables, views, procedures, and triggers are loaded correctly in your database:
-
-```bash
-# In the root folder:
-cd server
-npm install
-cd ..
-node verify.js
-```
+   The client application will run on `http://localhost:3001` (or the port specified by Vite).
 
 ---
 
 ## 🔑 Demo Credentials
 
-To check the app features immediately without registering new accounts, use these pre-loaded seed accounts (default password for all is `password123`):
+After running `node reset_db.js`, the following admin account will be available to manage the platform:
 
-- **Student User**: `alice_smith` or `bob_jones` (Password: `password123`)
-- **Admin User**: `admin` (Password: `password123`)
+- **Admin Account**: `admin@lostandfound.com`
+- **Password**: `admin123`
+
+To test the student flow, simply click "Register" on the login page to create a new student account.

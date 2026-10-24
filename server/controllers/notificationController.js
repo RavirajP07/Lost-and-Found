@@ -1,58 +1,30 @@
-const db = require('../config/db');
+const Notification = require('../models/Notification');
 
-const getNotifications = async (req, res) => {
-  const isStudent = req.user.role === 'student';
-  const query = isStudent 
-    ? 'SELECT * FROM Notifications WHERE user_id = ? ORDER BY created_at DESC'
-    : 'SELECT * FROM Notifications WHERE admin_id = ? ORDER BY created_at DESC';
-  const param = req.user.id;
-
+async function getNotifications(req, res) {
   try {
-    const [rows] = await db.query(query, [param]);
-    res.json(rows);
+    const notifications = await Notification.find({ user_id: req.user.id }).sort({ created_at: -1 }).limit(20);
+    res.json(notifications);
   } catch (error) {
-    console.error('Error fetching notifications:', error);
     res.status(500).json({ message: 'Error fetching notifications.', error: error.message });
   }
 };
 
-const markAsRead = async (req, res) => {
-  const { id } = req.params;
-  const isStudent = req.user.role === 'student';
-  
-  const query = isStudent
-    ? 'UPDATE Notifications SET is_read = TRUE WHERE notification_id = ? AND user_id = ?'
-    : 'UPDATE Notifications SET is_read = TRUE WHERE notification_id = ? AND admin_id = ?';
-
+async function markAsRead(req, res) {
   try {
-    const [result] = await db.query(query, [id, req.user.id]);
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'Notification not found or unauthorized.' });
-    }
+    await Notification.findByIdAndUpdate(req.params.id, { is_read: true });
     res.json({ message: 'Notification marked as read.' });
   } catch (error) {
-    console.error('Error marking notification as read:', error);
     res.status(500).json({ message: 'Error updating notification.', error: error.message });
   }
 };
 
-const markAllAsRead = async (req, res) => {
-  const isStudent = req.user.role === 'student';
-  const query = isStudent
-    ? 'UPDATE Notifications SET is_read = TRUE WHERE user_id = ?'
-    : 'UPDATE Notifications SET is_read = TRUE WHERE admin_id = ?';
-
+async function markAllAsRead(req, res) {
   try {
-    await db.query(query, [req.user.id]);
+    await Notification.updateMany({ user_id: req.user.id, is_read: false }, { is_read: true });
     res.json({ message: 'All notifications marked as read.' });
   } catch (error) {
-    console.error('Error marking all notifications as read:', error);
     res.status(500).json({ message: 'Error updating notifications.', error: error.message });
   }
 };
 
-module.exports = {
-  getNotifications,
-  markAsRead,
-  markAllAsRead
-};
+module.exports = { getNotifications, markAsRead, markAllAsRead };

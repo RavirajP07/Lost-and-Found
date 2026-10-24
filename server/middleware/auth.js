@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const authenticateToken = (req, res, next) => {
+function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Expecting "Bearer <token>"
 
@@ -18,15 +18,16 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-const requireStudent = (req, res, next) => {
+function requireStudent(req, res, next) {
   if (req.user && req.user.role === 'student') {
     next();
   } else {
     res.status(403).json({ message: 'Forbidden: Student access required.' });
   }
-};
+}
 
-const requireAdmin = (req, res, next) => {
+function requireAdmin(req, res, next) {
+  console.log('requireAdmin middleware hit. req.user:', req.user);
   if (req.user && req.user.role === 'admin') {
     next();
   } else {

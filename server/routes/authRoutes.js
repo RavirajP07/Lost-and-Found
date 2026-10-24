@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { registerStudent, loginStudent, loginAdmin, getProfile } = require('../controllers/authController');
+const { register, login, getProfile } = require('../controllers/authController');
 const { authenticateToken } = require('../middleware/auth');
 
-router.post('/register', registerStudent);
-router.post('/login', loginStudent);
-router.post('/admin/login', loginAdmin);
+router.post('/register', register);
+router.post('/login', login);
+// In the simplified setup, admin and student login uses the same endpoint
+router.post('/admin/login', login); 
 router.get('/profile', authenticateToken, getProfile);
 
 module.exports = router;

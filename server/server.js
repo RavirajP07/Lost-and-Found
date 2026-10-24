@@ -1,8 +1,10 @@
 const app = require('./app');
-require('dotenv').config();
+const connectDB = require('./config/db');
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`CampusConnect Server is running on port ${PORT}...`);
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Lost and Found Server is running on port ${PORT}...`);
+  });
 });
