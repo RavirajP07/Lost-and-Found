@@ -11,7 +11,7 @@ const ReportItem = () => {
   const [description, setDescription] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [location, setLocation] = useState('');
-  const [dateReported, setDateReported] = useState('');
+  const [dateReported, setDateReported] = useState(new Date().toISOString().split('T')[0]);
   const [image, setImage] = useState(null);
   
   const [loading, setLoading] = useState(false);
@@ -21,9 +21,13 @@ const ReportItem = () => {
     const fetchCategories = async () => {
       try {
         const res = await categoryAPI.getCategories();
-        setCategories(res.data);
-        if (res.data.length > 0) setCategoryId(res.data[0].category_id);
-      } catch (err) { console.error(err); }
+        setCategories(res.data || []);
+        if (res.data?.length > 0) {
+          setCategoryId(res.data[0].category_id || res.data[0]._id);
+        }
+      } catch (err) {
+        console.error(err);
+      }
     };
     fetchCategories();
   }, []);
@@ -44,66 +48,148 @@ const ReportItem = () => {
 
     try {
       await itemAPI.createItem(formData);
-      alert('Report submitted successfully!');
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to submit.');
+      setError(err.response?.data?.message || 'Failed to submit report.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="card" style={{ maxWidth: '600px', margin: '0 auto' }}>
-      <h2>Report an Item</h2>
-      {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
-      
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Report Type</label>
-          <select value={type} onChange={e => setType(e.target.value)} required>
-            <option value="lost">Lost Item</option>
-            <option value="found">Found Item</option>
-          </select>
-        </div>
+    <div style={{ maxWidth: '640px', margin: '0 auto' }}>
+      <div className="card" style={{ background: '#FFDE59', marginBottom: '20px' }}>
+        <h2 style={{ fontSize: '1.8rem', margin: 0 }}>📝 Report an Item</h2>
+        <p style={{ margin: '6px 0 0', fontWeight: 700, color: '#18181B' }}>
+          Lost your item or found something on campus? Fill out the details below!
+        </p>
+      </div>
 
-        <div className="form-group">
-          <label>Item Name</label>
-          <input type="text" required value={name} onChange={e => setName(e.target.value)} />
-        </div>
+      <div className="card">
+        {error && <div className="alert-banner alert-error">⚠️ {error}</div>}
 
-        <div className="form-group">
-          <label>Description</label>
-          <textarea required rows="4" value={description} onChange={e => setDescription(e.target.value)} />
-        </div>
+        <form onSubmit={handleSubmit}>
+          {/* Item Type Selector Card */}
+          <div className="form-group">
+            <label>Item Type</label>
+            <div style={{ display: 'flex', gap: '14px' }}>
+              <div
+                onClick={() => setType('lost')}
+                style={{
+                  flex: 1,
+                  padding: '14px',
+                  borderRadius: '12px',
+                  border: 'var(--ink-border)',
+                  background: type === 'lost' ? '#FF6B6B' : '#FFFFFF',
+                  color: type === 'lost' ? '#FFFFFF' : '#18181B',
+                  boxShadow: type === 'lost' ? '4px 4px 0px #18181b' : '2px 2px 0px #18181b',
+                  cursor: 'pointer',
+                  textAlign: 'center',
+                  fontWeight: 800,
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                🔴 I Lost An Item
+              </div>
+              <div
+                onClick={() => setType('found')}
+                style={{
+                  flex: 1,
+                  padding: '14px',
+                  borderRadius: '12px',
+                  border: 'var(--ink-border)',
+                  background: type === 'found' ? '#00E676' : '#FFFFFF',
+                  color: '#18181B',
+                  boxShadow: type === 'found' ? '4px 4px 0px #18181b' : '2px 2px 0px #18181b',
+                  cursor: 'pointer',
+                  textAlign: 'center',
+                  fontWeight: 800,
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                🟢 I Found An Item
+              </div>
+            </div>
+          </div>
 
-        <div className="form-group">
-          <label>Category</label>
-          <select value={categoryId} onChange={e => setCategoryId(e.target.value)} required>
-            {categories.map(cat => <option key={cat.category_id} value={cat.category_id}>{cat.name}</option>)}
-          </select>
-        </div>
+          <div className="form-group">
+            <label>Item Name / Short Title</label>
+            <input
+              type="text"
+              required
+              placeholder="e.g. Blue Dell Laptop Charger, Silver Casio Watch..."
+              value={name}
+              onChange={e => setName(e.target.value)}
+            />
+          </div>
 
-        <div className="form-group">
-          <label>Location</label>
-          <input type="text" required value={location} onChange={e => setLocation(e.target.value)} />
-        </div>
+          <div className="form-group">
+            <label>Category</label>
+            <select
+              required
+              value={categoryId}
+              onChange={e => setCategoryId(e.target.value)}
+            >
+              {categories.map(c => (
+                <option key={c.category_id || c._id} value={c.category_id || c._id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="form-group">
-          <label>Date</label>
-          <input type="date" required value={dateReported} onChange={e => setDateReported(e.target.value)} />
-        </div>
+          <div className="form-group">
+            <label>Campus Location</label>
+            <input
+              type="text"
+              required
+              placeholder="e.g. Central Library Floor 2, Canteen Table 4..."
+              value={location}
+              onChange={e => setLocation(e.target.value)}
+            />
+          </div>
 
-        <div className="form-group">
-          <label>Image (Optional)</label>
-          <input type="file" accept="image/*" onChange={e => setImage(e.target.files[0])} />
-        </div>
+          <div className="form-group">
+            <label>Date Lost / Found</label>
+            <input
+              type="date"
+              required
+              value={dateReported}
+              onChange={e => setDateReported(e.target.value)}
+            />
+          </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button type="submit" disabled={loading}>{loading ? 'Submitting...' : 'Submit'}</button>
-          <button type="button" className="btn-secondary" onClick={() => navigate('/dashboard')}>Cancel</button>
-        </div>
-      </form>
+          <div className="form-group">
+            <label>Detailed Description</label>
+            <textarea
+              required
+              rows="4"
+              placeholder="Describe color, brand, condition, identifying marks, serial numbers, stickers..."
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Photo Attachment (Optional)</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={e => setImage(e.target.files[0])}
+              style={{ background: '#FFFDF5', padding: '10px' }}
+            />
+          </div>
+
+          <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
+            <button type="submit" className="btn-success" disabled={loading} style={{ flex: 1, padding: '14px' }}>
+              {loading ? 'Submitting...' : '🚀 Submit Report'}
+            </button>
+            <button type="button" onClick={() => navigate(-1)} style={{ background: '#F4F4F5' }}>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

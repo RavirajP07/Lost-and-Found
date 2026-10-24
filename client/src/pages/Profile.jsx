@@ -19,40 +19,73 @@ const Profile = ({ user }) => {
     fetchProfileData();
   }, [user]);
 
-  if (loading) return <div style={{ textAlign: 'center' }}>Loading Profile...</div>;
+  if (loading) {
+    return (
+      <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+        <div style={{ fontSize: '3rem' }}>🌀</div>
+        <h3 style={{ marginTop: '12px' }}>Loading student profile...</h3>
+      </div>
+    );
+  }
 
   return (
-    <div className="card" style={{ maxWidth: '500px', margin: '0 auto' }}>
-      <h2>👤 Student Profile</h2>
+    <div style={{ maxWidth: '520px', margin: '0 auto' }}>
+      <div className="card" style={{ background: '#5CE1E6', marginBottom: '20px', textAlign: 'center' }}>
+        <div style={{
+          width: '72px',
+          height: '72px',
+          borderRadius: '50%',
+          background: '#FFFFFF',
+          border: 'var(--ink-border)',
+          boxShadow: 'var(--shadow-comic-sm)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '2.5rem',
+          margin: '0 auto 12px'
+        }}>
+          👤
+        </div>
+        <h2 style={{ fontSize: '1.8rem', margin: '0 0 6px' }}>{profile?.username || user?.username}</h2>
+        <span className="badge badge-status" style={{ fontSize: '0.85rem' }}>
+          Role: {profile?.role || user?.role || 'Student'}
+        </span>
+      </div>
 
-      {profile ? (
-        <table style={{ width: '100%' }}>
-          <tbody>
-            <tr>
-              <td style={{ fontWeight: 'bold' }}>Username</td>
-              <td>{profile.username}</td>
-            </tr>
-            <tr>
-              <td style={{ fontWeight: 'bold' }}>Roll Number</td>
-              <td>{profile.roll_number}</td>
-            </tr>
-            <tr>
-              <td style={{ fontWeight: 'bold' }}>Email Address</td>
-              <td>{profile.email}</td>
-            </tr>
-            <tr>
-              <td style={{ fontWeight: 'bold' }}>Phone Number</td>
-              <td>{profile.phone_number || 'N/A'}</td>
-            </tr>
-            <tr>
-              <td style={{ fontWeight: 'bold' }}>Date Joined</td>
-              <td>{new Date(profile.created_at).toLocaleDateString()}</td>
-            </tr>
-          </tbody>
-        </table>
-      ) : (
-        <p>Failed to load profile data.</p>
-      )}
+      <div className="card">
+        <h3 style={{ marginBottom: '16px' }}>🎒 Student Credentials</h3>
+
+        {profile ? (
+          <div className="table-container">
+            <table>
+              <tbody>
+                <tr>
+                  <td style={{ background: '#FFF3B0', width: '40%' }}>Student Name</td>
+                  <td><strong>{profile.username}</strong></td>
+                </tr>
+                <tr>
+                  <td style={{ background: '#FFF3B0' }}>Roll Number</td>
+                  <td><span className="badge badge-category">{profile.roll_number || 'N/A'}</span></td>
+                </tr>
+                <tr>
+                  <td style={{ background: '#FFF3B0' }}>Email Address</td>
+                  <td><code>{profile.email}</code></td>
+                </tr>
+                <tr>
+                  <td style={{ background: '#FFF3B0' }}>Phone Number</td>
+                  <td>{profile.phone_number || 'Not provided'}</td>
+                </tr>
+                <tr>
+                  <td style={{ background: '#FFF3B0' }}>Member Since</td>
+                  <td>📅 {new Date(profile.created_at).toLocaleDateString()}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p style={{ textAlign: 'center', color: '#71717A' }}>Failed to retrieve student profile.</p>
+        )}
+      </div>
     </div>
   );
 };

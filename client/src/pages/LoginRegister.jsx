@@ -99,7 +99,7 @@ const LoginRegister = ({ onLoginSuccess }) => {
         phone_number: regPhone.trim(),
         otp: regOtp.trim()
       });
-      setRegSuccess('🎉 Email verified and account registered successfully! You can now log in.');
+      setRegSuccess('🎉 Email verified and account registered! You can now sign in.');
       setRegUsername('');
       setRegEmail('');
       setRegPassword('');
@@ -116,22 +116,31 @@ const LoginRegister = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div style={{ display: 'flex', gap: '40px', justifyContent: 'center', flexWrap: 'wrap', padding: '20px 0' }}>
+    <div style={{ display: 'flex', gap: '32px', justifyContent: 'center', flexWrap: 'wrap', padding: '10px 0' }}>
       {/* Login Card */}
-      <div className="card" style={{ flex: 1, minWidth: '320px', maxWidth: '420px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
-        <h2 style={{ marginBottom: '20px', color: '#1a365d' }}>🔐 Portal Login</h2>
-        {loginError && <div style={{ color: '#e53e3e', background: '#fff5f5', border: '1px solid #fed7d7', padding: '10px', borderRadius: '6px', marginBottom: '16px' }}>⚠️ {loginError}</div>}
+      <div className="card" style={{ flex: '1 1 340px', maxWidth: '440px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+          <span style={{ fontSize: '2rem' }}>🔐</span>
+          <h2 style={{ margin: 0 }}>Portal Sign In</h2>
+        </div>
+        <p style={{ color: '#52525B', fontWeight: 600, fontSize: '0.9rem', marginBottom: '20px' }}>
+          Welcome back! Access your student or admin dashboard.
+        </p>
+
+        {loginError && <div className="alert-banner alert-error">⚠️ {loginError}</div>}
+
         <form onSubmit={handleLogin}>
           <div className="form-group">
             <label>Email Address</label>
             <input 
               type="email" 
               required 
-              placeholder="e.g. student@college.edu" 
+              placeholder="e.g. admin@lostandfound.com" 
               value={loginEmail} 
               onChange={e => setLoginEmail(e.target.value)} 
             />
           </div>
+
           <div className="form-group">
             <label>Password</label>
             <input 
@@ -142,27 +151,39 @@ const LoginRegister = ({ onLoginSuccess }) => {
               onChange={e => setLoginPassword(e.target.value)} 
             />
           </div>
-          <button type="submit" disabled={loginLoading} style={{ width: '100%', marginTop: '10px' }}>
-            {loginLoading ? 'Signing In...' : 'Sign In'}
+
+          <button type="submit" disabled={loginLoading} className="btn-primary" style={{ width: '100%', padding: '14px', marginTop: '10px' }}>
+            {loginLoading ? 'Signing In...' : 'Sign In 🚀'}
           </button>
         </form>
+
+        <div style={{ marginTop: '20px', padding: '12px', background: '#FFFDF5', border: '2px dashed #18181B', borderRadius: '10px', fontSize: '0.85rem' }}>
+          <strong>💡 Admin Demo Credentials:</strong><br />
+          Email: <code>admin@lostandfound.com</code><br />
+          Password: <code>admin123</code>
+        </div>
       </div>
 
       {/* Register Card */}
-      <div className="card" style={{ flex: 1, minWidth: '320px', maxWidth: '450px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
-        <h2 style={{ marginBottom: '8px', color: '#1a365d' }}>📝 Student Registration</h2>
-        <p style={{ color: '#718096', fontSize: '13px', marginBottom: '16px' }}>With 2-step OTP email verification</p>
+      <div className="card" style={{ flex: '1 1 380px', maxWidth: '480px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+          <span style={{ fontSize: '2rem' }}>📝</span>
+          <h2 style={{ margin: 0 }}>New Student Registration</h2>
+        </div>
+        <p style={{ color: '#52525B', fontWeight: 600, fontSize: '0.9rem', marginBottom: '16px' }}>
+          Sign up with your campus email & 2-step OTP verification.
+        </p>
 
-        {regError && <div style={{ color: '#e53e3e', background: '#fff5f5', border: '1px solid #fed7d7', padding: '10px', borderRadius: '6px', marginBottom: '16px' }}>⚠️ {regError}</div>}
-        {regSuccess && <div style={{ color: '#2f855a', background: '#f0fff4', border: '1px solid #c6f6d5', padding: '10px', borderRadius: '6px', marginBottom: '16px' }}>{regSuccess}</div>}
+        {regError && <div className="alert-banner alert-error">⚠️ {regError}</div>}
+        {regSuccess && <div className="alert-banner alert-success">{regSuccess}</div>}
 
         <form onSubmit={handleRegister}>
           <div className="form-group">
-            <label>Full Name / Username</label>
+            <label>Student Full Name</label>
             <input 
               type="text" 
               required 
-              placeholder="e.g. Alex Smith" 
+              placeholder="e.g. Alex Johnson" 
               value={regUsername} 
               onChange={e => setRegUsername(e.target.value)} 
             />
@@ -178,7 +199,7 @@ const LoginRegister = ({ onLoginSuccess }) => {
                 value={regEmail} 
                 onChange={e => {
                   setRegEmail(e.target.value);
-                  if (otpSent) setOtpSent(false); // Reset OTP if email changed
+                  if (otpSent) setOtpSent(false);
                 }} 
                 style={{ flex: 1 }}
               />
@@ -187,27 +208,27 @@ const LoginRegister = ({ onLoginSuccess }) => {
                 onClick={handleSendOtp} 
                 disabled={otpLoading || otpTimer > 0 || !regEmail}
                 style={{ 
-                  backgroundColor: otpTimer > 0 ? '#718096' : '#3182ce', 
-                  color: 'white', 
+                  background: otpTimer > 0 ? '#E4E4E7' : '#FFDE59', 
+                  color: '#18181B', 
                   padding: '8px 14px', 
-                  fontSize: '13px',
+                  fontSize: '0.9rem',
                   whiteSpace: 'nowrap'
                 }}
               >
-                {otpLoading ? 'Sending...' : otpTimer > 0 ? `Resend (${otpTimer}s)` : 'Send OTP'}
+                {otpLoading ? 'Sending...' : otpTimer > 0 ? `Resend (${otpTimer}s)` : 'Send OTP 🔑'}
               </button>
             </div>
             {otpMessage && (
-              <div style={{ fontSize: '12px', color: '#2b6cb0', marginTop: '6px', fontWeight: '500' }}>
+              <div style={{ fontSize: '0.85rem', color: '#166534', marginTop: '6px', fontWeight: 800 }}>
                 {otpMessage}
               </div>
             )}
           </div>
 
-          {/* OTP Verification Input */}
+          {/* OTP Verification Input Box */}
           {otpSent && (
-            <div className="form-group" style={{ background: '#ebf8ff', padding: '12px', borderRadius: '6px', border: '1px dashed #bee3f8' }}>
-              <label style={{ color: '#2c5282', fontWeight: 'bold' }}>Enter 6-Digit Verification Code</label>
+            <div className="form-group" style={{ background: '#FFF3B0', padding: '14px', borderRadius: '12px', border: 'var(--ink-border)' }}>
+              <label style={{ color: '#18181B', fontWeight: 800 }}>Enter 6-Digit Code</label>
               <input 
                 type="text" 
                 required 
@@ -216,14 +237,14 @@ const LoginRegister = ({ onLoginSuccess }) => {
                 value={regOtp} 
                 onChange={e => setRegOtp(e.target.value.replace(/[^0-9]/g, ''))} 
                 style={{ 
-                  fontSize: '20px', 
-                  letterSpacing: '6px', 
+                  fontSize: '22px', 
+                  letterSpacing: '8px', 
                   textAlign: 'center', 
-                  fontWeight: 'bold',
-                  borderColor: '#3182ce' 
+                  fontWeight: 800,
+                  background: '#FFFFFF'
                 }} 
               />
-              <span style={{ fontSize: '11px', color: '#4a5568' }}>Code expires in 5 minutes</span>
+              <span style={{ fontSize: '0.8rem', color: '#52525B', fontWeight: 700 }}>Valid for 5 minutes</span>
             </div>
           )}
 
@@ -243,7 +264,7 @@ const LoginRegister = ({ onLoginSuccess }) => {
             <input 
               type="text" 
               required 
-              placeholder="e.g. CS2024001" 
+              placeholder="e.g. CS2026101" 
               value={regRoll} 
               onChange={e => setRegRoll(e.target.value)} 
             />
@@ -262,9 +283,10 @@ const LoginRegister = ({ onLoginSuccess }) => {
           <button 
             type="submit" 
             disabled={regLoading}
-            style={{ width: '100%', backgroundColor: '#2f855a', padding: '12px', fontSize: '15px' }}
+            className="btn-success"
+            style={{ width: '100%', padding: '14px', fontSize: '1.05rem', marginTop: '10px' }}
           >
-            {regLoading ? 'Verifying...' : 'Verify OTP & Register'}
+            {regLoading ? 'Verifying...' : 'Verify OTP & Register 🎉'}
           </button>
         </form>
       </div>

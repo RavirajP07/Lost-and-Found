@@ -1,43 +1,63 @@
-/* Lost and Found Global CSS System */
+/* ==========================================================================
+   CARTOON / NEOBRUTALISM POP-ART DESIGN SYSTEM
+   Theme: Bold Black Ink Lines, Pop Pastels, Tactile 3D Offset Shadows
+   ========================================================================== */
+
 :root {
-  --primary-color: #1e3a8a;       /* Deep Academic Navy */
-  --primary-hover: #1e40af;       /* Royal Blue Hover */
-  --primary-light: #eff6ff;       /* Soft Light Blue */
-  --accent-color: #3b82f6;        /* Bright Slate Blue */
-  --bg-color: #f8fafc;            /* Clean light grey-blue */
-  --card-bg: #ffffff;             /* Crisp white cards */
-  --text-main: #0f172a;           /* Near black text */
-  --text-muted: #64748b;          /* Soft grey text */
-  --border-color: #e2e8f0;        /* Light clean border */
-  --success-color: #10b981;       /* Emerald Green */
-  --error-color: #ef4444;          /* Red alert */
-  --warning-color: #f59e0b;        /* Amber warning */
+  /* Cartoon Pop Color Palette */
+  --pop-yellow: #FFDE59;
+  --pop-cyan: #5CE1E6;
+  --pop-coral: #FF6B6B;
+  --pop-lime: #00E676;
+  --pop-purple: #C77DFF;
+  --pop-blue: #3A86FF;
+  --pop-cream: #FFFDF5;
+  --pop-card: #FFFFFF;
+  --ink-black: #18181B;
+  --ink-muted: #52525B;
+
+  /* Comic Ink Borders & Shadows */
+  --ink-border: 3px solid var(--ink-black);
+  --ink-border-sm: 2px solid var(--ink-black);
+  --ink-border-thick: 4px solid var(--ink-black);
   
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --transition-fast: 0.2s ease;
-  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  
-  --max-width: 1200px;
+  --shadow-comic-sm: 3px 3px 0px var(--ink-black);
+  --shadow-comic: 5px 5px 0px var(--ink-black);
+  --shadow-comic-lg: 8px 8px 0px var(--ink-black);
+  --shadow-comic-pressed: 2px 2px 0px var(--ink-black);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 9999px;
+
+  --font-heading: 'Fredoka', 'Comic Neue', cursive, sans-serif;
+  --font-body: 'Nunito', sans-serif;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
-  background-color: var(--bg-color);
-  color: var(--text-main);
+  font-family: var(--font-body);
+  background-color: var(--pop-cream);
+  /* Playful subtle comic polka-dot pattern */
+  background-image: radial-gradient(#dcd8c8 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+  color: var(--ink-black);
   min-height: 100vh;
-  line-height: 1.5;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--ink-black);
+  letter-spacing: 0.5px;
+  font-weight: 700;
 }
 
 a {
@@ -48,20 +68,4 @@ a {
 button, input, select, textarea {
   font-family: inherit;
   font-size: inherit;
-}
-
-/* Scrollbar styles for premium feel */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-color);
-}
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
 }

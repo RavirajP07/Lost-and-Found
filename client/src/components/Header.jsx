@@ -5,39 +5,43 @@ const Header = ({ user, onLogout }) => {
   return (
     <header className="header">
       <div>
-        <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
-          <h1>🎓 Lost and Found</h1>
+        <Link to="/" style={{ textDecoration: 'none' }}>
+          <h1>🕵️‍♂️ Lost & Found</h1>
         </Link>
       </div>
 
-      <div className="nav-links">
+      <nav className="nav-links">
         {user ? (
           <>
             {user.role === 'student' && (
               <>
-                <NavLink to="/dashboard">Dashboard</NavLink>
-                <NavLink to="/search">Search</NavLink>
-                <NavLink to="/report">Report Item</NavLink>
-                <NavLink to="/profile">Profile</NavLink>
+                <NavLink to="/dashboard">📊 Dashboard</NavLink>
+                <NavLink to="/search">🔍 Search</NavLink>
+                <NavLink to="/report">📝 Report Item</NavLink>
+                <NavLink to="/profile">👤 Profile</NavLink>
               </>
             )}
 
             {user.role === 'admin' && (
-              <NavLink to="/admin">Admin Panel</NavLink>
+              <>
+                <NavLink to="/admin">⚡ Admin Panel</NavLink>
+                <NavLink to="/search">🔍 All Items</NavLink>
+                <NavLink to="/report">📝 Report Item</NavLink>
+              </>
             )}
 
-            <span style={{ marginLeft: '20px', fontWeight: 'bold' }}>
-              {user.username} ({user.role})
+            <span className="user-badge">
+              {user.role === 'admin' ? '👑' : '🎒'} {user.username}
             </span>
             
-            <button onClick={onLogout} style={{ marginLeft: '20px' }}>
-              Logout
+            <button onClick={onLogout} className="btn-logout">
+              🚪 Logout
             </button>
           </>
         ) : (
-          <NavLink to="/login">Login / Register</NavLink>
+          <NavLink to="/login">🔑 Sign In / Register</NavLink>
         )}
-      </div>
+      </nav>
     </header>
   );
 };
