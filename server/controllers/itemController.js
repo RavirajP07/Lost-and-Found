@@ -76,24 +76,28 @@ async function getItemById(req, res) {
 
 async function createItem(req, res) {
   try {
-    const { name, description, category_id, type, location, date_reported } = req.body;
+    const { name, item_name, description, category_id, type, location, date_reported } = req.body;
     let imagePath = null;
     if (req.file) imagePath = `uploads/${req.file.filename}`;
 
+    const dateVal = date_reported && !isNaN(new Date(date_reported).getTime()) 
+      ? new Date(date_reported) 
+      : new Date();
+
     const newItem = await Item.create({
-      item_name: name,
+      item_name: name || item_name,
       description,
       category_id,
-      type,
+      type: type || 'found',
       location,
-      date_reported: new Date(date_reported),
+      date_reported: dateVal,
       reporter_user_id: req.user.id,
       primary_image_path: imagePath
     });
 
     res.status(201).json({ message: 'Item reported successfully.', itemId: newItem._id, imagePath });
   } catch (error) {
-    if (req.file) fs.unlinkSync(req.file.path);
+    if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
     res.status(500).json({ message: 'Error creating item.', error: error.message });
   }
 };
