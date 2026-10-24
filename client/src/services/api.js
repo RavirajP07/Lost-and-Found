@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+export const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://lost-and-found-api-dfut.onrender.com/api' : '/api');
+export const SERVER_URL = API_URL.replace(/\/api\/?$/, '');
+
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: API_URL,
 });
 
 // Axios Request Interceptor to append Authorization Token

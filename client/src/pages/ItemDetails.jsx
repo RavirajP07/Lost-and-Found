@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { itemAPI, claimAPI } from '../services/api';
+import { itemAPI, claimAPI, SERVER_URL } from '../services/api';
 
 const ItemDetails = ({ user }) => {
   const { id } = useParams();
@@ -71,7 +71,11 @@ const ItemDetails = ({ user }) => {
       <div style={{ display: 'flex', gap: '20px' }}>
         <div style={{ flex: 1 }}>
           {item.primary_image_path ? (
-            <img src={`/${item.primary_image_path}`} alt={item.item_name} style={{ width: '100%', borderRadius: '8px' }} />
+            <img 
+              src={item.primary_image_path.startsWith('http') ? item.primary_image_path : `${SERVER_URL}/${item.primary_image_path.replace(/^\//, '')}`} 
+              alt={item.item_name} 
+              style={{ width: '100%', borderRadius: '8px' }} 
+            />
           ) : (
             <div style={{ padding: '50px', background: '#eee', textAlign: 'center' }}>No image</div>
           )}
