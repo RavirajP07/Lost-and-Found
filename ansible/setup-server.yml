@@ -1,0 +1,61 @@
+---
+- name: Automate Production Server Setup for Lost & Found
+  hosts: all
+  become: yes # Runs as root (sudo)
+
+  tasks:
+    # 1. Update OS packages
+    - name: Update all Ubuntu apt packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    # 2. Install required system tools
+    - name: Install prerequisite packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - git
+          - ufw
+        state: present
+
+    # 3. Install Docker Engine
+    - name: Install Docker and Docker Compose
+      apt:
+        name:
+          - docker.io
+          - docker-compose
+        state: present
+
+    - name: Ensure Docker service is running and enabled on boot
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    # 4. Configure UFW Firewall (Security Hardening)
+    - name: Allow SSH (Port 22)
+      ufw:
+        rule: allow
+        port: '22'
+        proto: tcp
+
+    - name: Allow HTTP (Port 80)
+      ufw:
+        rule: allow
+        port: '80'
+        proto: tcp
+
+    - name: Allow HTTPS (Port 443)
+      ufw:
+        rule: allow
+        port: '443'
+        proto: tcp
+
+    - name: Enable UFW Firewall
+      ufw:
+        state: enabled
+        policy: deny # Blocks all other unauthorized ports by default
