@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { itemAPI, claimAPI } from '../services/api';
 
 const StudentDashboard = ({ user }) => {
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
   const [items, setItems] = useState([]);
   const [claims, setClaims] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,10 +15,10 @@ const StudentDashboard = ({ user }) => {
     const fetchData = async () => {
       try {
         const itemsRes = await itemAPI.getItems();
-        setItems(itemsRes.data);
+        setItems(itemsRes.data || []);
 
         const claimsRes = await claimAPI.getClaims();
-        setClaims(claimsRes.data);
+        setClaims(claimsRes.data || []);
       } catch (err) {
         console.error('Failed to load dashboard:', err);
       } finally {
@@ -24,14 +28,14 @@ const StudentDashboard = ({ user }) => {
     fetchData();
   }, []);
 
-  const activeItems = items.filter(item => item.item_status === 'active');
-  const myItems = items.filter(item => item.reporter_user_id === user.id);
+  const activeItems = (items || []).filter(item => item.item_status === 'active');
+  const myItems = (items || []).filter(item => item.reporter_user_id === user?.id);
 
   if (loading) return <div style={{ textAlign: 'center' }}>Loading Dashboard...</div>;
 
   return (
     <div>
-      <h2>Welcome, {user.username}!</h2>
+      <h2>Welcome, {user?.username || 'Student'}!</h2>
 
       <div className="card" style={{ marginBottom: '20px' }}>
         <h3>My Claims Status</h3>

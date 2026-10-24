@@ -12,14 +12,14 @@ import './css/index.css';
 import './css/App.css';
 
 function App() {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const savedUser = localStorage.getItem('cc_user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
+  const [user, setUser] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem('cc_user');
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch {
+      return null;
     }
-  }, []);
+  });
 
   const handleLoginSuccess = (token, loggedInUser) => {
     localStorage.setItem('cc_token', token);
@@ -41,14 +41,14 @@ function App() {
           <Routes>
             <Route path="/login" element={<LoginRegister onLoginSuccess={handleLoginSuccess} />} />
             
-            <Route path="/dashboard" element={<StudentDashboard user={user} />} />
-            <Route path="/report" element={<ReportItem />} />
+            <Route path="/dashboard" element={user ? <StudentDashboard user={user} /> : <Navigate to="/login" replace />} />
+            <Route path="/report" element={user ? <ReportItem /> : <Navigate to="/login" replace />} />
             <Route path="/search" element={<SearchFilter />} />
             <Route path="/items/:id" element={<ItemDetails user={user} />} />
-            <Route path="/profile" element={<Profile user={user} />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/profile" element={user ? <Profile user={user} /> : <Navigate to="/login" replace />} />
+            <Route path="/admin" element={user && user.role === 'admin' ? <AdminDashboard /> : <Navigate to="/login" replace />} />
 
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<Navigate to={user ? (user.role === 'admin' ? '/admin' : '/dashboard') : '/login'} replace />} />
           </Routes>
         </main>
       </div>
