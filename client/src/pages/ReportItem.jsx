@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { categoryAPI, itemAPI } from '../services/api';
 
 const ReportItem = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialType = searchParams.get('type') === 'found' ? 'found' : 'lost';
   const [categories, setCategories] = useState([]);
   
-  const [type, setType] = useState('lost');
+  const [type, setType] = useState(initialType);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [categoryId, setCategoryId] = useState('');

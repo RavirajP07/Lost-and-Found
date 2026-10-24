@@ -34,21 +34,10 @@ const StudentDashboard = ({ user }) => {
   const lostCount = (items || []).filter(item => item.type === 'lost').length;
   const foundCount = (items || []).filter(item => item.type === 'found').length;
 
-  const getCategoryEmoji = (catName = '') => {
-    const lower = catName.toLowerCase();
-    if (lower.includes('elect')) return '💻';
-    if (lower.includes('bag') || lower.includes('wallet')) return '🎒';
-    if (lower.includes('key') || lower.includes('id')) return '🔑';
-    if (lower.includes('book')) return '📚';
-    if (lower.includes('cloth')) return '👕';
-    return '📦';
-  };
-
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '60px 20px' }}>
-        <div style={{ fontSize: '3rem', animation: 'spin 1s infinite linear' }}>🌀</div>
-        <h2 style={{ marginTop: '16px' }}>Loading the Cartoon Portal...</h2>
+        <h2 style={{ marginTop: '16px', fontFamily: 'Space Grotesk' }}>Loading your dashboard...</h2>
       </div>
     );
   }
@@ -56,27 +45,129 @@ const StudentDashboard = ({ user }) => {
   return (
     <div>
       {/* Welcome Hero Banner */}
-      <div className="card" style={{ background: '#FFF3B0', marginBottom: '28px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+      <div className="card" style={{ background: '#FFFDF5', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
           <div>
-            <span className="badge badge-category" style={{ marginBottom: '8px' }}>🎓 Campus Hub</span>
-            <h2 style={{ fontSize: '2rem', margin: '6px 0' }}>Hey {user?.username || 'Student'}! 👋</h2>
-            <p style={{ margin: 0, fontWeight: 700, color: '#52525B' }}>
-              Track your reported items, check claim progress, and browse items found across campus.
+            <span className="badge badge-category" style={{ marginBottom: '8px' }}>🎓 Anna University Campus Portal</span>
+            <h2 style={{ fontSize: '2rem', margin: '4px 0', letterSpacing: '-0.5px' }}>
+              Welcome, {user?.username || 'Student'}! 👋
+            </h2>
+            <p style={{ margin: 0, fontWeight: 600, color: '#4B5563' }}>
+              What would you like to do today? Select your primary action below.
             </p>
           </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <Link to="/report">
-              <button className="btn-success">➕ Report Lost / Found</button>
-            </Link>
-            <Link to="/search">
-              <button className="btn-primary">🔍 Search Catalog</button>
-            </Link>
-          </div>
+          <Link to="/profile">
+            <button style={{ background: '#FFFFFF', padding: '8px 16px', fontSize: '0.9rem' }}>
+              👤 View My Profile
+            </button>
+          </Link>
         </div>
       </div>
 
-      {/* 4 Cartoon Stat Boxes */}
+      {/* =====================================================================
+          PSYCHOLOGY-DRIVEN INTENT FORK (Loss Aversion & Altruistic Action Hub)
+          ===================================================================== */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: '18px',
+        marginBottom: '28px'
+      }}>
+        {/* High-Urgency Action: I Lost Something (Red Alert Affordance) */}
+        <Link to="/report?type=lost" style={{ textDecoration: 'none' }}>
+          <div className="card" style={{
+            background: 'var(--pop-coral)',
+            color: 'white',
+            padding: '22px',
+            marginBottom: 0,
+            cursor: 'pointer',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+          }}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span className="badge" style={{ background: '#FFFFFF', color: '#000000' }}>URGENT ACTION</span>
+                <span style={{ fontSize: '2rem' }}>🔴</span>
+              </div>
+              <h3 style={{ fontSize: '1.45rem', color: '#FFFFFF', margin: '12px 0 6px' }}>I Lost An Item</h3>
+              <p style={{ margin: 0, fontSize: '0.9rem', color: '#FFFDF5', fontWeight: 600, lineHeight: 1.5 }}>
+                Missing keys, wallet, phone, or bag? File a lost report immediately so campus finders can notify you.
+              </p>
+            </div>
+            <div style={{ marginTop: '18px' }}>
+              <button style={{ width: '100%', background: '#FFFFFF', color: '#000000', padding: '12px', fontSize: '0.95rem' }}>
+                Report Lost Item 📢
+              </button>
+            </div>
+          </div>
+        </Link>
+
+        {/* Altruistic / Reward Action: I Found Something (Green Positive Affordance) */}
+        <Link to="/report?type=found" style={{ textDecoration: 'none' }}>
+          <div className="card" style={{
+            background: 'var(--pop-lime)',
+            color: 'var(--ink-black)',
+            padding: '22px',
+            marginBottom: 0,
+            cursor: 'pointer',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+          }}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span className="badge" style={{ background: '#000000', color: '#FFFFFF' }}>HELP A PEER</span>
+                <span style={{ fontSize: '2rem' }}>🟢</span>
+              </div>
+              <h3 style={{ fontSize: '1.45rem', margin: '12px 0 6px' }}>I Found An Item</h3>
+              <p style={{ margin: 0, fontSize: '0.9rem', color: '#18181B', fontWeight: 600, lineHeight: 1.5 }}>
+                Picked up an item on campus? Help return it safely to its rightful student owner.
+              </p>
+            </div>
+            <div style={{ marginTop: '18px' }}>
+              <button style={{ width: '100%', background: '#000000', color: '#FFFFFF', padding: '12px', fontSize: '0.95rem' }}>
+                Report Found Item 🤝
+              </button>
+            </div>
+          </div>
+        </Link>
+
+        {/* Exploratory Action: Search All Campus Items */}
+        <Link to="/search" style={{ textDecoration: 'none' }}>
+          <div className="card" style={{
+            background: 'var(--pop-yellow)',
+            color: 'var(--ink-black)',
+            padding: '22px',
+            marginBottom: 0,
+            cursor: 'pointer',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+          }}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span className="badge" style={{ background: '#000000', color: '#FFFFFF' }}>EXPLORE</span>
+                <span style={{ fontSize: '2rem' }}>🔍</span>
+              </div>
+              <h3 style={{ fontSize: '1.45rem', margin: '12px 0 6px' }}>Search Campus Catalog</h3>
+              <p style={{ margin: 0, fontSize: '0.9rem', color: '#18181B', fontWeight: 600, lineHeight: 1.5 }}>
+                Browse all {items.length} items currently logged across campus with smart keyword & category filters.
+              </p>
+            </div>
+            <div style={{ marginTop: '18px' }}>
+              <button style={{ width: '100%', background: 'var(--pop-blue)', color: '#FFFFFF', padding: '12px', fontSize: '0.95rem' }}>
+                Search & Filter 🚀
+              </button>
+            </div>
+          </div>
+        </Link>
+      </div>
+
+      {/* 4 Sharp Stat Counters */}
       <div className="stats-grid">
         <div className="stat-box" style={{ background: '#FFDE59' }}>
           <div className="stat-icon">📦</div>
@@ -94,7 +185,7 @@ const StudentDashboard = ({ user }) => {
           </div>
         </div>
 
-        <div className="stat-box" style={{ background: '#FF6B6B', color: 'white' }}>
+        <div className="stat-box" style={{ background: '#FF5A5F', color: 'white' }}>
           <div className="stat-icon">🔴</div>
           <div className="stat-info">
             <div className="stat-number" style={{ color: 'white' }}>{lostCount}</div>
@@ -111,14 +202,18 @@ const StudentDashboard = ({ user }) => {
         </div>
       </div>
 
-      {/* My Claims Status Card */}
+      {/* =====================================================================
+          SELF-RELEVANCE BIAS: User's Own Claims & Reports First
+          ===================================================================== */}
       <div className="card" style={{ marginBottom: '28px' }}>
-        <h3>🏷️ My Claims & Inquiries</h3>
+        <h3>🏷️ My Claims & Inquiries ({claims.length})</h3>
         {claims.length === 0 ? (
-          <div style={{ padding: '24px', textAlign: 'center', background: '#FFFDF5', border: '2px dashed #18181b', borderRadius: '12px' }}>
+          <div style={{ padding: '24px', textAlign: 'center', background: '#F8F9FA', border: '2px dashed #000000' }}>
             <div style={{ fontSize: '2.5rem', marginBottom: '8px' }}>📭</div>
-            <p style={{ fontWeight: 800, margin: 0 }}>No claims submitted yet.</p>
-            <span style={{ fontSize: '0.85rem', color: '#71717A' }}>Found an item that belongs to you? Submit a claim with proof to recover it!</span>
+            <p style={{ fontWeight: 800, margin: 0 }}>No active claims submitted yet.</p>
+            <span style={{ fontSize: '0.85rem', color: '#6B7280' }}>
+              Found an item that belongs to you? Submit a claim with proof to recover it.
+            </span>
           </div>
         ) : (
           <div className="table-container">
@@ -171,12 +266,22 @@ const StudentDashboard = ({ user }) => {
 
       {/* My Reported Items Card */}
       <div className="card" style={{ marginBottom: '28px' }}>
-        <h3>📝 Items Reported by Me ({myItems.length})</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+          <h3 style={{ margin: 0 }}>📝 Items Reported by Me ({myItems.length})</h3>
+          <Link to="/report">
+            <button style={{ background: '#FFDE59', padding: '6px 14px', fontSize: '0.85rem' }}>
+              ➕ File New Report
+            </button>
+          </Link>
+        </div>
+
         {myItems.length === 0 ? (
-          <div style={{ padding: '24px', textAlign: 'center', background: '#FFFDF5', border: '2px dashed #18181b', borderRadius: '12px' }}>
+          <div style={{ padding: '24px', textAlign: 'center', background: '#F8F9FA', border: '2px dashed #000000' }}>
             <div style={{ fontSize: '2.5rem', marginBottom: '8px' }}>🎒</div>
-            <p style={{ fontWeight: 800, margin: 0 }}>You haven't reported any items.</p>
-            <span style={{ fontSize: '0.85rem', color: '#71717A' }}>Lost something or found someone's keys? Report it now!</span>
+            <p style={{ fontWeight: 800, margin: 0 }}>You haven't reported any items yet.</p>
+            <span style={{ fontSize: '0.85rem', color: '#6B7280' }}>
+              Did you misplace something or discover an unattended bag? File a report above!
+            </span>
           </div>
         ) : (
           <div className="table-container">
@@ -184,9 +289,9 @@ const StudentDashboard = ({ user }) => {
               <thead>
                 <tr>
                   <th>Type</th>
-                  <th>Item</th>
+                  <th>Item Title</th>
                   <th>Category</th>
-                  <th>Location</th>
+                  <th>Campus Location</th>
                   <th>Date</th>
                   <th>Action</th>
                 </tr>
@@ -216,10 +321,15 @@ const StudentDashboard = ({ user }) => {
         )}
       </div>
 
-      {/* Active Campus Items Grid */}
+      {/* =====================================================================
+          COMMUNITY FEED: Active Campus Catalog with Goal-Driven Buttons
+          ===================================================================== */}
       <div className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
-          <h3>🌟 Active Campus Items ({activeItems.length})</h3>
+          <div>
+            <h3 style={{ margin: 0 }}>🌟 Recent Campus Items ({activeItems.length})</h3>
+            <span style={{ fontSize: '0.85rem', color: '#6B7280', fontWeight: 600 }}>Click any item to submit a claim or return details</span>
+          </div>
           <Link to="/search">
             <button style={{ background: '#5CE1E6', padding: '8px 16px', fontSize: '0.9rem' }}>
               View All in Search 🚀
@@ -255,7 +365,15 @@ const StudentDashboard = ({ user }) => {
                     </div>
                     <p className="item-description">{item.description}</p>
                     <Link to={`/items/${item.item_id}`} style={{ marginTop: 'auto' }}>
-                      <button style={{ width: '100%' }}>View & Claim 👀</button>
+                      <button 
+                        style={{ 
+                          width: '100%', 
+                          background: item.type === 'found' ? 'var(--pop-lime)' : 'var(--pop-cyan)',
+                          color: 'var(--ink-black)'
+                        }}
+                      >
+                        {item.type === 'found' ? '🙋‍♂️ Claim This Item' : '🤝 I Found This Item'}
+                      </button>
                     </Link>
                   </div>
                 </div>
