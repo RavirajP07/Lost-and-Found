@@ -1,16 +1,33 @@
-import React from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 
 const Header = ({ user, onLogout }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+
+  // Close menu on route change
+  React.useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
   return (
     <header className="header">
-      <div>
+      <div className="header-top">
         <Link to="/" style={{ textDecoration: 'none' }}>
           <h1>🕵️‍♂️ Lost & Found</h1>
         </Link>
+
+        {/* Mobile Hamburger Button */}
+        <button 
+          className="mobile-menu-btn" 
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle navigation menu"
+        >
+          {menuOpen ? '✖ CLOSE' : '☰ MENU'}
+        </button>
       </div>
 
-      <nav className="nav-links">
+      <nav className={`nav-links ${menuOpen ? 'nav-open' : ''}`}>
         {user ? (
           <>
             {user.role === 'student' && (
