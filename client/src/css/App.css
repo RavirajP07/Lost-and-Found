@@ -1,5 +1,6 @@
 /* ==========================================================================
-   CARTOON / POP-ART COMPONENT STYLES
+   SHARP NEOBRUTALISM COMPONENT STYLES
+   All elements have razor-sharp 0px corners with bold ink borders
    ========================================================================== */
 
 .app-container {
@@ -9,12 +10,12 @@
 }
 
 /* --------------------------------------------------------------------------
-   CARTOON HEADER / NAVBAR
+   SHARP HEADER / NAVBAR
    -------------------------------------------------------------------------- */
 .header {
   background: var(--pop-yellow);
   border: var(--ink-border-thick);
-  border-radius: var(--radius-lg);
+  border-radius: 0px;
   box-shadow: var(--shadow-comic-lg);
   padding: 16px 24px;
   display: flex;
@@ -34,16 +35,17 @@
   margin: 0;
   font-size: 1.8rem;
   color: var(--ink-black);
-  text-shadow: 1px 1px 0px #fff;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  font-weight: 800;
+  letter-spacing: -1px;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -51,10 +53,10 @@
   background: #ffffff;
   color: var(--ink-black);
   border: var(--ink-border-sm);
-  border-radius: var(--radius-md);
+  border-radius: 0px;
   box-shadow: var(--shadow-comic-sm);
-  padding: 8px 16px;
-  font-weight: 800;
+  padding: 9px 16px;
+  font-weight: 700;
   font-size: 0.95rem;
   transition: all 0.15s ease;
   display: inline-flex;
@@ -78,21 +80,22 @@
   background: var(--pop-coral);
   color: #ffffff;
   border: var(--ink-border-sm);
-  border-radius: var(--radius-pill);
+  border-radius: 0px;
   box-shadow: var(--shadow-comic-sm);
-  padding: 6px 14px;
+  padding: 8px 14px;
   font-weight: 800;
   font-size: 0.85rem;
+  text-transform: uppercase;
 }
 
 .btn-logout {
   background: #ffffff !important;
   color: var(--ink-black) !important;
   border: var(--ink-border-sm) !important;
-  border-radius: var(--radius-md) !important;
+  border-radius: 0px !important;
   box-shadow: var(--shadow-comic-sm) !important;
-  font-weight: 800 !important;
-  padding: 8px 16px !important;
+  font-weight: 700 !important;
+  padding: 9px 16px !important;
   cursor: pointer;
 }
 
@@ -104,17 +107,17 @@
 }
 
 /* --------------------------------------------------------------------------
-   CARTOON CARDS & CONTAINERS
+   SHARP CARDS & CONTAINERS
    -------------------------------------------------------------------------- */
 .card {
   background: var(--pop-card);
   border: var(--ink-border);
-  border-radius: var(--radius-lg);
+  border-radius: 0px;
   box-shadow: var(--shadow-comic);
   padding: 24px;
   margin-bottom: 24px;
   position: relative;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .card:hover {
@@ -128,20 +131,21 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  font-weight: 800;
 }
 
 /* --------------------------------------------------------------------------
-   TACTILE CARTOON BUTTONS
+   SHARP TACTILE BUTTONS
    -------------------------------------------------------------------------- */
 button, .btn {
   background: var(--pop-yellow);
   color: var(--ink-black);
   border: var(--ink-border);
-  border-radius: var(--radius-md);
+  border-radius: 0px !important;
   box-shadow: var(--shadow-comic);
   padding: 10px 20px;
-  font-weight: 800;
-  font-size: 1rem;
+  font-weight: 700;
+  font-size: 0.95rem;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -171,39 +175,38 @@ button:disabled, .btn:disabled {
 }
 
 .btn-primary {
-  background: var(--pop-blue);
-  color: white;
+  background: var(--pop-blue) !important;
+  color: white !important;
 }
 .btn-primary:hover {
-  background: #2563eb;
-  color: white;
+  background: #1d4ed8 !important;
 }
 
 .btn-success {
-  background: var(--pop-lime);
-  color: var(--ink-black);
+  background: var(--pop-lime) !important;
+  color: var(--ink-black) !important;
 }
 .btn-success:hover {
-  background: #00c853;
+  background: #00c853 !important;
 }
 
 .btn-danger {
-  background: var(--pop-coral);
-  color: white;
+  background: var(--pop-coral) !important;
+  color: white !important;
 }
 .btn-danger:hover {
-  background: #e11d48;
+  background: #dc2626 !important;
 }
 
 /* --------------------------------------------------------------------------
-   COMIC STICKER BADGES
+   SHARP BADGES
    -------------------------------------------------------------------------- */
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 12px;
-  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  border-radius: 0px;
   border: var(--ink-border-sm);
   box-shadow: var(--shadow-comic-sm);
   font-weight: 800;
@@ -238,7 +241,7 @@ button:disabled, .btn:disabled {
 }
 
 /* --------------------------------------------------------------------------
-   CARTOON STATS WIDGETS
+   SHARP STATS WIDGETS
    -------------------------------------------------------------------------- */
 .stats-grid {
   display: grid;
@@ -249,7 +252,7 @@ button:disabled, .btn:disabled {
 
 .stat-box {
   border: var(--ink-border);
-  border-radius: var(--radius-lg);
+  border-radius: 0px;
   box-shadow: var(--shadow-comic);
   padding: 18px 20px;
   display: flex;
@@ -259,18 +262,18 @@ button:disabled, .btn:disabled {
 }
 
 .stat-box:hover {
-  transform: translate(-3px, -3px) rotate(-1deg);
+  transform: translate(-3px, -3px);
   box-shadow: var(--shadow-comic-lg);
 }
 
 .stat-icon {
-  font-size: 2.2rem;
+  font-size: 2rem;
   background: #ffffff;
   border: var(--ink-border-sm);
-  border-radius: var(--radius-md);
+  border-radius: 0px;
   box-shadow: var(--shadow-comic-sm);
-  width: 54px;
-  height: 54px;
+  width: 52px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -279,7 +282,7 @@ button:disabled, .btn:disabled {
 .stat-info .stat-number {
   font-family: var(--font-heading);
   font-size: 1.8rem;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.1;
   color: var(--ink-black);
 }
@@ -293,7 +296,7 @@ button:disabled, .btn:disabled {
 }
 
 /* --------------------------------------------------------------------------
-   ITEM GRID & CARTOON PRODUCT CARDS
+   SHARP ITEM GRID & PRODUCT CARDS
    -------------------------------------------------------------------------- */
 .item-grid {
   display: grid;
@@ -304,28 +307,25 @@ button:disabled, .btn:disabled {
 .item-card {
   background: #ffffff;
   border: var(--ink-border);
-  border-radius: var(--radius-lg);
+  border-radius: 0px;
   box-shadow: var(--shadow-comic);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .item-card:hover {
-  transform: translate(-4px, -4px) rotate(0.5deg);
+  transform: translate(-4px, -4px);
   box-shadow: var(--shadow-comic-lg);
 }
 
 .item-image-wrapper {
-  height: 190px;
-  background: #fef08a;
+  height: 200px;
+  background: #f4f4f5;
   border-bottom: var(--ink-border);
   position: relative;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .item-image-wrapper img {
@@ -336,18 +336,13 @@ button:disabled, .btn:disabled {
 }
 
 .item-card:hover .item-image-wrapper img {
-  transform: scale(1.05);
-}
-
-.item-image-fallback {
-  font-size: 4rem;
-  user-select: none;
+  transform: scale(1.04);
 }
 
 .item-badge-corner {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 10px;
+  left: 10px;
   z-index: 2;
 }
 
@@ -359,10 +354,11 @@ button:disabled, .btn:disabled {
 }
 
 .item-title {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 800;
   margin-bottom: 8px;
   color: var(--ink-black);
+  font-family: var(--font-heading);
 }
 
 .item-meta {
@@ -393,7 +389,7 @@ button:disabled, .btn:disabled {
 }
 
 /* --------------------------------------------------------------------------
-   FORMS & INPUTS
+   SHARP FORMS & INPUTS
    -------------------------------------------------------------------------- */
 .form-group {
   margin-bottom: 18px;
@@ -405,6 +401,8 @@ label {
   font-weight: 800;
   font-size: 0.95rem;
   color: var(--ink-black);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 input[type="text"],
@@ -416,8 +414,8 @@ textarea {
   width: 100%;
   padding: 12px 14px;
   border: var(--ink-border);
-  border-radius: var(--radius-md);
-  font-weight: 700;
+  border-radius: 0px !important;
+  font-weight: 600;
   font-size: 1rem;
   background: #ffffff;
   color: var(--ink-black);
@@ -430,16 +428,15 @@ input:focus, select:focus, textarea:focus {
   background: #fffdf0;
   border-color: var(--pop-blue);
   box-shadow: 4px 4px 0px var(--pop-blue);
-  transform: translate(-1px, -1px);
 }
 
 /* --------------------------------------------------------------------------
-   COMIC TABLES
+   SHARP TABLES
    -------------------------------------------------------------------------- */
 .table-container {
   overflow-x: auto;
   border: var(--ink-border);
-  border-radius: var(--radius-lg);
+  border-radius: 0px;
   box-shadow: var(--shadow-comic);
   background: white;
 }
@@ -453,15 +450,16 @@ th, td {
   padding: 14px 18px;
   text-align: left;
   border-bottom: 2px solid var(--ink-black);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 th {
   background: var(--pop-yellow);
   font-family: var(--font-heading);
-  font-size: 1rem;
+  font-size: 0.95rem;
   letter-spacing: 0.5px;
   border-bottom: var(--ink-border);
+  text-transform: uppercase;
 }
 
 tr:last-child td {
@@ -473,15 +471,15 @@ tbody tr:hover {
 }
 
 /* --------------------------------------------------------------------------
-   ALERT BANNERS
+   SHARP ALERTS
    -------------------------------------------------------------------------- */
 .alert-banner {
   border: var(--ink-border);
-  border-radius: var(--radius-md);
+  border-radius: 0px;
   box-shadow: var(--shadow-comic-sm);
   padding: 12px 16px;
   margin-bottom: 16px;
-  font-weight: 800;
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 10px;

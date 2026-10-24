@@ -45,14 +45,10 @@ async function sendOtp(req, res) {
 };
 
 async function register(req, res) {
-  const { username, email, password, role, roll_number, phone_number, otp } = req.body;
+  const { username, email, password, role, roll_number, phone_number } = req.body;
 
   if (!username || !email || !password) {
     return res.status(400).json({ message: 'Username, email, and password are required.' });
-  }
-
-  if (!otp) {
-    return res.status(400).json({ message: 'Verification code (OTP) is required to register.' });
   }
 
   try {
@@ -61,12 +57,6 @@ async function register(req, res) {
     const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res.status(400).json({ message: 'User with this email already exists.' });
-    }
-
-    // Verify OTP from database
-    const validOtp = await Otp.findOne({ email: normalizedEmail, otp: otp.trim() });
-    if (!validOtp) {
-      return res.status(400).json({ message: 'Invalid or expired verification code. Please request a new code.' });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -80,9 +70,6 @@ async function register(req, res) {
       roll_number,
       phone_number
     });
-
-    // Cleanup used OTP
-    await Otp.deleteMany({ email: normalizedEmail });
 
     res.status(201).json({ message: 'User registered successfully.' });
   } catch (error) {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { itemAPI, categoryAPI, SERVER_URL } from '../services/api';
+import { getItemImage } from '../services/imageHelper';
 
 const SearchFilter = () => {
   const [items, setItems] = useState([]);
@@ -178,29 +179,18 @@ const SearchFilter = () => {
       ) : (
         <div className="item-grid">
           {items.map(item => {
-            const imageSrc = item.primary_image_path
-              ? (item.primary_image_path.startsWith('http')
-                  ? item.primary_image_path
-                  : `${SERVER_URL}/${item.primary_image_path.replace(/^\//, '')}`)
-              : null;
+            const imageUrl = getItemImage(item, SERVER_URL);
 
             return (
               <div key={item.item_id} className="item-card">
                 <div className="item-image-wrapper">
                   <span className="item-badge-corner badge" style={{
-                    background: item.type === 'lost' ? '#FF6B6B' : '#00E676',
-                    color: item.type === 'lost' ? 'white' : '#18181B'
+                    background: item.type === 'lost' ? 'var(--pop-coral)' : 'var(--pop-lime)',
+                    color: item.type === 'lost' ? 'white' : 'var(--ink-black)'
                   }}>
                     {item.type === 'lost' ? '🔴 LOST' : '🟢 FOUND'}
                   </span>
-
-                  {imageSrc ? (
-                    <img src={imageSrc} alt={item.item_name} />
-                  ) : (
-                    <div className="item-image-fallback">
-                      {getCategoryEmoji(item.category_name)}
-                    </div>
-                  )}
+                  <img src={imageUrl} alt={item.item_name} />
                 </div>
 
                 <div className="item-content">

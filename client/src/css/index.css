@@ -1,22 +1,23 @@
 /* ==========================================================================
-   CARTOON / NEOBRUTALISM POP-ART DESIGN SYSTEM
-   Theme: Bold Black Ink Lines, Pop Pastels, Tactile 3D Offset Shadows
+   SHARP NEOBRUTALISM DESIGN SYSTEM
+   Theme: Razor-Sharp Edges (0px radius), Space Grotesk Typography, 
+   Bold Ink Borders, High-Contrast Offset 3D Shadows
    ========================================================================== */
 
 :root {
-  /* Cartoon Pop Color Palette */
+  /* High-Contrast Neobrutalism Palette */
   --pop-yellow: #FFDE59;
   --pop-cyan: #5CE1E6;
-  --pop-coral: #FF6B6B;
+  --pop-coral: #FF5A5F;
   --pop-lime: #00E676;
-  --pop-purple: #C77DFF;
-  --pop-blue: #3A86FF;
-  --pop-cream: #FFFDF5;
+  --pop-purple: #B388FF;
+  --pop-blue: #2563EB;
+  --pop-cream: #F8F9FA;
   --pop-card: #FFFFFF;
-  --ink-black: #18181B;
-  --ink-muted: #52525B;
+  --ink-black: #000000;
+  --ink-muted: #4B5563;
 
-  /* Comic Ink Borders & Shadows */
+  /* Sharp Ink Borders (0px border-radius) */
   --ink-border: 3px solid var(--ink-black);
   --ink-border-sm: 2px solid var(--ink-black);
   --ink-border-thick: 4px solid var(--ink-black);
@@ -26,13 +27,14 @@
   --shadow-comic-lg: 8px 8px 0px var(--ink-black);
   --shadow-comic-pressed: 2px 2px 0px var(--ink-black);
 
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --radius-pill: 9999px;
+  /* Strictly Sharp Edges */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-pill: 0px;
 
-  --font-heading: 'Fredoka', 'Comic Neue', cursive, sans-serif;
-  --font-body: 'Nunito', sans-serif;
+  --font-heading: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 * {
@@ -44,9 +46,6 @@
 body {
   font-family: var(--font-body);
   background-color: var(--pop-cream);
-  /* Playful subtle comic polka-dot pattern */
-  background-image: radial-gradient(#dcd8c8 1.5px, transparent 1.5px);
-  background-size: 24px 24px;
   color: var(--ink-black);
   min-height: 100vh;
   line-height: 1.6;
@@ -56,8 +55,8 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   color: var(--ink-black);
-  letter-spacing: 0.5px;
   font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 a {
@@ -68,4 +67,5 @@ a {
 button, input, select, textarea {
   font-family: inherit;
   font-size: inherit;
+  border-radius: 0px !important;
 }

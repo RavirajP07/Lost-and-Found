@@ -41,8 +41,8 @@ async function submitClaim(req, res) {
     if (existingClaim) return res.status(400).json({ message: 'You already have a pending claim for this item.' });
 
     const item = await Item.findById(item_id);
-    if (!item || item.type !== 'found' || item.item_status !== 'active') {
-      return res.status(400).json({ message: 'Item is not eligible for claiming.' });
+    if (!item || item.item_status !== 'active') {
+      return res.status(400).json({ message: 'Item is not eligible for claiming (must be active).' });
     }
 
     const newClaim = await Claim.create({

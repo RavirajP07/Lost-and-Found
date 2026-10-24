@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authAPI } from '../services/api';
 
@@ -19,20 +19,7 @@ const LoginRegister = ({ onLoginSuccess }) => {
   const [regPassword, setRegPassword] = useState('');
   const [regRoll, setRegRoll] = useState('');
   const [regPhone, setRegPhone] = useState('');
-  const [regOtp, setRegOtp] = useState('');
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpTimer, setOtpTimer] = useState(0);
-  const [otpLoading, setOtpLoading] = useState(false);
-  const [otpMessage, setOtpMessage] = useState('');
   const [regLoading, setRegLoading] = useState(false);
-
-  useEffect(() => {
-    let interval = null;
-    if (otpTimer > 0) {
-      interval = setInterval(() => setOtpTimer(prev => prev - 1), 1000);
-    }
-    return () => clearInterval(interval);
-  }, [otpTimer]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -50,42 +37,13 @@ const LoginRegister = ({ onLoginSuccess }) => {
     }
   };
 
-  const handleSendOtp = async () => {
-    if (!regEmail || !regEmail.includes('@')) {
-      setRegError('Please enter a valid email address first.');
-      return;
-    }
-    setOtpLoading(true);
-    setRegError('');
-    setOtpMessage('');
-    try {
-      const res = await authAPI.sendOtp({ email: regEmail.trim() });
-      setOtpSent(true);
-      setOtpTimer(60);
-      if (res.data.devOtp) {
-        setOtpMessage(`🔑 Code: ${res.data.devOtp} (Valid for 5 mins)`);
-      } else {
-        setOtpMessage(`📧 Verification code sent to ${regEmail}`);
-      }
-    } catch (err) {
-      setRegError(err.response?.data?.message || 'Failed to send OTP.');
-    } finally {
-      setOtpLoading(false);
-    }
-  };
-
   const handleRegister = async (e) => {
     e.preventDefault();
     setRegError('');
     setRegSuccess('');
 
-    if (!otpSent) {
-      setRegError('Please click "Send OTP" to verify your email first.');
-      return;
-    }
-
-    if (!regOtp || regOtp.trim().length !== 6) {
-      setRegError('Please enter the 6-digit verification code.');
+    if (!regUsername || !regEmail || !regPassword || !regRoll) {
+      setRegError('Please fill out all required fields.');
       return;
     }
 
@@ -97,17 +55,13 @@ const LoginRegister = ({ onLoginSuccess }) => {
         password: regPassword,
         roll_number: regRoll.trim(),
         phone_number: regPhone.trim(),
-        otp: regOtp.trim()
       });
-      setRegSuccess('🎉 Email verified and account registered! You can now sign in.');
+      setRegSuccess('🎉 Account registered successfully! You can now sign in.');
       setRegUsername('');
       setRegEmail('');
       setRegPassword('');
       setRegRoll('');
       setRegPhone('');
-      setRegOtp('');
-      setOtpSent(false);
-      setOtpMessage('');
     } catch (err) {
       setRegError(err.response?.data?.message || 'Registration failed');
     } finally {
@@ -168,10 +122,10 @@ const LoginRegister = ({ onLoginSuccess }) => {
       <div className="card" style={{ flex: '1 1 380px', maxWidth: '480px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
           <span style={{ fontSize: '2rem' }}>📝</span>
-          <h2 style={{ margin: 0 }}>New Student Registration</h2>
+          <h2 style={{ margin: 0 }}>Student Registration</h2>
         </div>
         <p style={{ color: '#52525B', fontWeight: 600, fontSize: '0.9rem', marginBottom: '16px' }}>
-          Sign up with your campus email & 2-step OTP verification.
+          Sign up with your student details to report and claim items.
         </p>
 
         {regError && <div className="alert-banner alert-error">⚠️ {regError}</div>}
@@ -191,62 +145,14 @@ const LoginRegister = ({ onLoginSuccess }) => {
 
           <div className="form-group">
             <label>Student Email Address</label>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <input 
-                type="email" 
-                required 
-                placeholder="student@college.edu" 
-                value={regEmail} 
-                onChange={e => {
-                  setRegEmail(e.target.value);
-                  if (otpSent) setOtpSent(false);
-                }} 
-                style={{ flex: 1 }}
-              />
-              <button 
-                type="button" 
-                onClick={handleSendOtp} 
-                disabled={otpLoading || otpTimer > 0 || !regEmail}
-                style={{ 
-                  background: otpTimer > 0 ? '#E4E4E7' : '#FFDE59', 
-                  color: '#18181B', 
-                  padding: '8px 14px', 
-                  fontSize: '0.9rem',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                {otpLoading ? 'Sending...' : otpTimer > 0 ? `Resend (${otpTimer}s)` : 'Send OTP 🔑'}
-              </button>
-            </div>
-            {otpMessage && (
-              <div style={{ fontSize: '0.85rem', color: '#166534', marginTop: '6px', fontWeight: 800 }}>
-                {otpMessage}
-              </div>
-            )}
+            <input 
+              type="email" 
+              required 
+              placeholder="student@college.edu" 
+              value={regEmail} 
+              onChange={e => setRegEmail(e.target.value)} 
+            />
           </div>
-
-          {/* OTP Verification Input Box */}
-          {otpSent && (
-            <div className="form-group" style={{ background: '#FFF3B0', padding: '14px', borderRadius: '12px', border: 'var(--ink-border)' }}>
-              <label style={{ color: '#18181B', fontWeight: 800 }}>Enter 6-Digit Code</label>
-              <input 
-                type="text" 
-                required 
-                maxLength={6} 
-                placeholder="123456" 
-                value={regOtp} 
-                onChange={e => setRegOtp(e.target.value.replace(/[^0-9]/g, ''))} 
-                style={{ 
-                  fontSize: '22px', 
-                  letterSpacing: '8px', 
-                  textAlign: 'center', 
-                  fontWeight: 800,
-                  background: '#FFFFFF'
-                }} 
-              />
-              <span style={{ fontSize: '0.8rem', color: '#52525B', fontWeight: 700 }}>Valid for 5 minutes</span>
-            </div>
-          )}
 
           <div className="form-group">
             <label>Password</label>
@@ -286,7 +192,7 @@ const LoginRegister = ({ onLoginSuccess }) => {
             className="btn-success"
             style={{ width: '100%', padding: '14px', fontSize: '1.05rem', marginTop: '10px' }}
           >
-            {regLoading ? 'Verifying...' : 'Verify OTP & Register 🎉'}
+            {regLoading ? 'Registering...' : 'Create Account 🎉'}
           </button>
         </form>
       </div>
