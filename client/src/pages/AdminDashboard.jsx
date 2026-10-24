@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { claimAPI, itemAPI } from '../services/api';
+import { claimAPI, itemAPI, adminAPI } from '../services/api';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('claims');
@@ -10,6 +10,7 @@ const AdminDashboard = () => {
   // Data states
   const [claims, setClaims] = useState([]);
   const [items, setItems] = useState([]);
+  const [stats, setStats] = useState(null);
 
   // Remarks states for claim actions
   const [selectedClaimId, setSelectedClaimId] = useState(null);
@@ -35,9 +36,19 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchStats = async () => {
+    try {
+      const res = await adminAPI.getStats();
+      setStats(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     setError('');
     setSuccess('');
+    fetchStats();
     if (activeTab === 'claims') fetchClaims();
     else if (activeTab === 'moderation') fetchItems();
   }, [activeTab]);
@@ -101,7 +112,7 @@ const AdminDashboard = () => {
         <div className="stat-box" style={{ background: '#FFF3B0' }}>
           <div className="stat-icon">⏳</div>
           <div className="stat-info">
-            <div className="stat-number">{pendingClaims.length}</div>
+            <div className="stat-number">{stats?.pendingClaims ?? pendingClaims.length}</div>
             <div className="stat-label">Pending Claims</div>
           </div>
         </div>
@@ -109,16 +120,24 @@ const AdminDashboard = () => {
         <div className="stat-box" style={{ background: '#00E676' }}>
           <div className="stat-icon">✅</div>
           <div className="stat-info">
-            <div className="stat-number">{approvedClaims.length}</div>
-            <div className="stat-label">Approved Claims</div>
+            <div className="stat-number">{stats?.resolvedItems ?? approvedClaims.length}</div>
+            <div className="stat-label">Resolved Items</div>
           </div>
         </div>
 
         <div className="stat-box" style={{ background: '#5CE1E6' }}>
           <div className="stat-icon">📦</div>
           <div className="stat-info">
-            <div className="stat-number">{items.length || claims.length}</div>
-            <div className="stat-label">Total Handled</div>
+            <div className="stat-number">{stats?.totalItems ?? items.length}</div>
+            <div className="stat-label">Total Reports</div>
+          </div>
+        </div>
+
+        <div className="stat-box" style={{ background: '#B388FF', color: 'white' }}>
+          <div className="stat-icon">👥</div>
+          <div className="stat-info">
+            <div className="stat-number" style={{ color: 'white' }}>{stats?.totalUsers ?? '1'}</div>
+            <div className="stat-label" style={{ color: '#F8F9FA' }}>Students</div>
           </div>
         </div>
       </div>

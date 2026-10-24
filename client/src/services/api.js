@@ -18,6 +18,21 @@ API.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
+// Axios Response Interceptor to handle expired session / 401
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('cc_token');
+      localStorage.removeItem('cc_user');
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // AuthService endpoints
 export const authAPI = {
   sendOtp: (data) => API.post('/auth/send-otp', data),

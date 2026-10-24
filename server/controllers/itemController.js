@@ -1,6 +1,7 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const mongoose = require('mongoose');
 const Item = require('../models/Item');
 const ActivityLog = require('../models/ActivityLog');
 
@@ -46,7 +47,13 @@ async function getItems(req, res) {
     if (name) query.$or = [{ item_name: new RegExp(name, 'i') }, { description: new RegExp(name, 'i') }];
     if (category_id) query.category_id = category_id;
     if (location) query.location = new RegExp(location, 'i');
-    if (date_reported) query.date_reported = new Date(date_reported);
+    if (date_reported && !isNaN(new Date(date_reported).getTime())) {
+      const startOfDay = new Date(date_reported);
+      startOfDay.setUTCHours(0, 0, 0, 0);
+      const endOfDay = new Date(date_reported);
+      endOfDay.setUTCHours(23, 59, 59, 999);
+      query.date_reported = { $gte: startOfDay, $lte: endOfDay };
+    }
     if (status) query.item_status = status;
     if (type) query.type = type;
 
@@ -63,6 +70,10 @@ async function getItems(req, res) {
 
 async function getItemById(req, res) {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ message: 'Item not found (invalid ID).' });
+    }
+
     const item = await Item.findById(req.params.id)
       .populate('category_id')
       .populate('reporter_user_id');
@@ -104,10 +115,14 @@ async function createItem(req, res) {
 
 async function updateItem(req, res) {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ message: 'Item not found (invalid ID).' });
+    }
+
     const item = await Item.findById(req.params.id);
     if (!item) return res.status(404).json({ message: 'Item not found.' });
 
-    const isOwner = req.user.role === 'admin' || item.reporter_user_id.toString() === req.user.id;
+    const isOwner = req.user.role === 'admin' || (item.reporter_user_id && item.reporter_user_id.toString() === req.user.id);
     if (!isOwner) return res.status(403).json({ message: 'Not authorized.' });
 
     const { name, description, category_id, type, location, date_reported, status } = req.body;
@@ -137,10 +152,14 @@ async function updateItem(req, res) {
 
 async function deleteItem(req, res) {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ message: 'Item not found (invalid ID).' });
+    }
+
     const item = await Item.findById(req.params.id);
     if (!item) return res.status(404).json({ message: 'Item not found.' });
 
-    const isAuthorized = req.user.role === 'admin' || item.reporter_user_id.toString() === req.user.id;
+    const isAuthorized = req.user.role === 'admin' || (item.reporter_user_id && item.reporter_user_id.toString() === req.user.id);
     if (!isAuthorized) return res.status(403).json({ message: 'Not authorized.' });
 
     if (item.primary_image_path) {

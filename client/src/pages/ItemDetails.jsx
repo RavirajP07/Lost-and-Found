@@ -151,13 +151,21 @@ const ItemDetails = ({ user }) => {
           {/* Action Buttons */}
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             {isItemActive && !showClaimForm && (
-              <button 
-                className="btn-success" 
-                onClick={() => setShowClaimForm(true)}
-                style={{ padding: '12px 24px', fontSize: '1rem' }}
-              >
-                {item.type === 'found' ? '🙋‍♂️ Claim Ownership (This is Mine)' : '🤝 I Found This Item (Submit Return Details)'}
-              </button>
+              user ? (
+                <button 
+                  className="btn-success" 
+                  onClick={() => setShowClaimForm(true)}
+                  style={{ padding: '12px 24px', fontSize: '1rem' }}
+                >
+                  {item.type === 'found' ? '🙋‍♂️ Claim Ownership (This is Mine)' : '🤝 I Found This Item (Submit Return Details)'}
+                </button>
+              ) : (
+                <Link to="/login">
+                  <button className="btn-primary" style={{ padding: '12px 24px', fontSize: '1rem' }}>
+                    🔑 Sign In to Claim / Return this Item
+                  </button>
+                </Link>
+              )
             )}
 
             {isOwner && (

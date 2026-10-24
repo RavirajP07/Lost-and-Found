@@ -83,7 +83,7 @@ async function processClaim(req, res) {
     claim.updated_at = Date.now();
     await claim.save();
 
-    if (claimAction === 'approved') {
+    if (claimAction === 'approved' && claim.item_id) {
       await Item.findByIdAndUpdate(claim.item_id._id, { item_status: 'claimed' });
       await Claim.updateMany(
         { item_id: claim.item_id._id, _id: { $ne: claim._id } },
@@ -91,11 +91,13 @@ async function processClaim(req, res) {
       );
     }
 
-    await Notification.create({
-      user_id: claim.claimant_user_id,
-      title: `Claim ${claimAction === 'approved' ? 'Approved' : 'Rejected'}`,
-      message: `Your claim for "${claim.item_id.item_name}" has been ${claimAction}. ${remarks ? `Remarks: ${remarks}` : ''}`
-    });
+    if (claim.item_id) {
+      await Notification.create({
+        user_id: claim.claimant_user_id,
+        title: `Claim ${claimAction === 'approved' ? 'Approved' : 'Rejected'}`,
+        message: `Your claim for "${claim.item_id.item_name}" has been ${claimAction}. ${remarks ? `Remarks: ${remarks}` : ''}`
+      });
+    }
 
     await ActivityLog.create({
       user_type: 'admin',
