@@ -13,7 +13,7 @@ const defaultCategories = [
 
 const seedCategories = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/campus_connect');
+    await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/lost_and_found');
     console.log('Connected to MongoDB');
 
     // Check if categories already exist

@@ -5,10 +5,10 @@ const User = require('./models/User');
 
 const seedAdmin = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/campus_connect');
+    await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/lost_and_found');
     console.log('Connected to MongoDB');
 
-    const adminEmail = 'admin@campusconnect.com';
+    const adminEmail = 'admin@lostandfound.com';
     const existingAdmin = await User.findOne({ email: adminEmail });
     
     if (existingAdmin) {
@@ -28,7 +28,7 @@ const seedAdmin = async () => {
     });
 
     console.log('Admin user created successfully!');
-    console.log('Email: admin@campusconnect.com');
+    console.log('Email: admin@lostandfound.com');
     console.log('Password: admin123');
 
     process.exit(0);
